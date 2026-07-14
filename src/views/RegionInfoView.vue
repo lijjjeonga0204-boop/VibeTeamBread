@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import {
   CATEGORY_OPTIONS,
   loadCategoryData,
@@ -18,6 +18,9 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 const failedImages = ref({})
 const searchKeyword = ref('')
+const currentPage = ref(1)
+
+const itemsPerPage = 12
 
 const currentCategory = computed(() => {
   return (
@@ -42,14 +45,79 @@ const filteredItems = computed(() => {
   })
 })
 
-const visibleItems = computed(() =>
-  filteredItems.value.slice(0, 12),
-)
+const totalPages = computed(() => {
+  const totalItems = filteredItems.value.length
+  if (totalItems === 0) {
+    return 0
+  }
+  return Math.ceil(totalItems / itemsPerPage)
+})
+
+const displayStart = computed(() => {
+  if (filteredItems.value.length === 0) {
+    return 0
+  }
+  return (currentPage.value - 1) * itemsPerPage + 1
+})
+
+const displayEnd = computed(() => {
+  return Math.min(currentPage.value * itemsPerPage, filteredItems.value.length)
+})
+
+const visibleItems = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  return filteredItems.value.slice(startIndex, endIndex)
+})
+
+const visiblePageNumbers = computed(() => {
+  const total = totalPages.value
+  const current = currentPage.value
+
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, index) => index + 1)
+  }
+
+  const start = Math.max(1, Math.min(current - 2, total - 4))
+  const end = Math.min(total, start + 4)
+
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index)
+})
 
 function handleImageError(id) {
   failedImages.value = {
     ...failedImages.value,
     [id]: true,
+  }
+}
+
+function scrollToTop() {
+  if (typeof window !== 'undefined') {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+}
+
+function goToPage(pageNumber) {
+  if (pageNumber < 1 || pageNumber > totalPages.value) {
+    return
+  }
+
+  currentPage.value = pageNumber
+  scrollToTop()
+}
+
+function goToPreviousPage() {
+  if (currentPage.value > 1) {
+    goToPage(currentPage.value - 1)
+  }
+}
+
+function goToNextPage() {
+  if (currentPage.value < totalPages.value) {
+    goToPage(currentPage.value + 1)
   }
 }
 
@@ -67,6 +135,10 @@ async function fetchCategoryData(categoryKey) {
   try {
     const result = await loadCategoryData(categoryKey)
     currentCategoryData.value = result
+
+    if (currentPage.value > totalPages.value) {
+      currentPage.value = totalPages.value || 1
+    }
   } catch (error) {
     console.error('지역정보 로딩 오류:', error)
 
@@ -86,8 +158,13 @@ async function selectCategory(categoryKey) {
 
   selectedCategory.value = categoryKey
   searchKeyword.value = ''
+  currentPage.value = 1
   await fetchCategoryData(categoryKey)
 }
+
+watch(searchKeyword, () => {
+  currentPage.value = 1
+})
 
 onMounted(() => {
   fetchCategoryData(selectedCategory.value)
@@ -127,7 +204,6 @@ onMounted(() => {
         <span class="place-tab-icon" aria-hidden="true">
           {{ option.icon }}
         </span>
-
         <span>{{ option.label }}</span>
       </button>
     </section>
@@ -157,18 +233,12 @@ onMounted(() => {
       </div>
     </section>
 
-    <section
-      class="place-status"
-      aria-live="polite"
-    >
+    <section class="place-status" aria-live="polite">
       <p v-if="isLoading">
         {{ currentCategory.label }} 정보를 불러오는 중입니다.
       </p>
 
-      <p
-        v-else-if="errorMessage"
-        class="place-error"
-      >
+      <p v-else-if="errorMessage" class="place-error">
         {{ errorMessage }}
       </p>
 
@@ -209,10 +279,7 @@ onMounted(() => {
             @error="handleImageError(place.id)"
           />
 
-          <div
-            v-else
-            class="place-image-empty"
-          >
+          <div class="place-image-empty">
             이미지 준비 중
           </div>
         </div>
@@ -231,6 +298,55 @@ onMounted(() => {
           </p>
         </div>
       </article>
+    </section>
+
+    <section
+      v-if="
+        !isLoading &&
+        !errorMessage &&
+        filteredItems.length > 0
+      "
+      class="place-pagination-wrapper"
+      aria-label="지역정보 페이지 이동"
+    >
+      <p class="place-pagination-info">
+        총 {{ filteredItems.length }}개 중
+        {{ displayStart }}–{{ displayEnd }}개 표시
+      </p>
+
+      <div class="place-pagination">
+        <button
+          type="button"
+          class="place-pagination-button"
+          :disabled="currentPage === 1"
+          @click="goToPreviousPage"
+        >
+          이전
+        </button>
+
+        <div class="place-pagination-list">
+          <button
+            v-for="page in visiblePageNumbers"
+            :key="page"
+            type="button"
+            class="place-pagination-button"
+            :class="{ active: currentPage === page }"
+            :aria-current="currentPage === page ? 'page' : null"
+            @click="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="place-pagination-button"
+          :disabled="currentPage === totalPages || totalPages === 0"
+          @click="goToNextPage"
+        >
+          다음
+        </button>
+      </div>
     </section>
   </div>
 </template>
