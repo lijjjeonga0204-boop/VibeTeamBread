@@ -1,4 +1,7 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+import { getRecentPosts } from '../services/boardService.js'
+
 const categories = [
   { key: 'attractions', emoji: '🗺️', label: '관광지' },
   { key: 'leisure', emoji: '🚴', label: '레포츠' },
@@ -7,14 +10,57 @@ const categories = [
   { key: 'accommodations', emoji: '🛏️', label: '숙박' },
   { key: 'courses', emoji: '🗺️', label: '여행코스' },
   { key: 'restaurants', emoji: '🍜', label: '음식점' },
-  { key: 'festivals', emoji: '🎉', label: '축제·공연·행사' }
+  { key: 'festivals', emoji: '🎉', label: '축제·공연·행사' },
 ]
 
-const recentPosts = [
-  { title: '대전 동구 숨은 맛집 탐방기', date: '2026-07-12', category: '음식점' },
-  { title: '충청권 여름 축제 추천 3곳', date: '2026-07-08', category: '축제·공연·행사' },
-  { title: '아이들과 함께 가기 좋은 문화시설', date: '2026-07-05', category: '문화시설' }
-]
+const recentPosts = ref([])
+const isPostsLoading = ref(false)
+const postsErrorMessage = ref('')
+
+function getPostPreview(content) {
+  if (!content) {
+    return ''
+  }
+
+  const trimmed = String(content).replace(/\s+/g, ' ').trim()
+  if (trimmed.length <= 80) {
+    return trimmed
+  }
+  return `${trimmed.slice(0, 80)}...`
+}
+
+function formatPostDate(dateString) {
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) {
+    return '날짜 정보 없음'
+  }
+
+  return new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
+}
+
+async function loadRecentPosts() {
+  isPostsLoading.value = true
+  postsErrorMessage.value = ''
+
+  try {
+    recentPosts.value = getRecentPosts(3)
+  } catch (error) {
+    postsErrorMessage.value =
+      error instanceof Error
+        ? error.message
+        : '최근 게시글을 불러오는 중 오류가 발생했습니다.'
+  } finally {
+    isPostsLoading.value = false
+  }
+}
+
+onMounted(() => {
+  loadRecentPosts()
+})
 </script>
 
 <template>
@@ -41,36 +87,67 @@ const recentPosts = [
       <h2>카테고리</h2>
       <div class="categories-grid">
         <RouterLink
-            v-for="item in categories"
-            :key="item.key"
-            :to="{
-                path: '/places',
-                query: {
-                    category: item.key
-                }
-            }"
-            class="category-card"
-            :aria-label="`${item.label} 지역정보 보기`"
+          v-for="item in categories"
+          :key="item.key"
+          :to="{
+            path: '/places',
+            query: {
+              category: item.key,
+            },
+          }"
+          class="category-card"
+          :aria-label="`${item.label} 지역정보 보기`"
         >
-            <span class="category-emoji">{{ item.emoji }}</span>
-            <span>{{ item.label }}</span>
-            </RouterLink>
+          <span class="category-emoji">{{ item.emoji }}</span>
+          <span>{{ item.label }}</span>
+        </RouterLink>
       </div>
     </section>
 
     <section class="posts-section">
       <div class="section-header">
         <h2>최근 게시글</h2>
-        <p>예시 게시글을 통해 화면 구성을 확인하세요.</p>
+        <RouterLink to="/board" class="home-posts-more">
+          커뮤니티 전체 보기
+        </RouterLink>
       </div>
-      <div class="posts-list">
-        <article v-for="post in recentPosts" :key="post.title" class="post-card">
-          <h3>{{ post.title }}</h3>
-          <div class="post-meta">
-            <span>{{ post.date }}</span>
+
+      <p v-if="isPostsLoading" class="home-posts-loading">
+        최근 게시글을 불러오는 중입니다.
+      </p>
+
+      <p v-if="postsErrorMessage" class="home-posts-error">
+        {{ postsErrorMessage }}
+      </p>
+
+      <div v-if="!isPostsLoading && !postsErrorMessage">
+        <div v-if="recentPosts.length === 0" class="home-posts-empty">
+          <p>아직 등록된 게시글이 없습니다.</p>
+          <p>커뮤니티에서 첫 번째 지역 이야기를 남겨보세요.</p>
+          <RouterLink to="/board" class="home-posts-empty-link">
+            커뮤니티로 이동
+          </RouterLink>
+        </div>
+
+        <div v-else class="posts-list">
+          <article
+            v-for="post in recentPosts"
+            :key="post.id"
+            class="post-card"
+          >
             <span class="post-category">{{ post.category }}</span>
-          </div>
-        </article>
+            <h3>{{ post.title }}</h3>
+            <p class="home-post-preview">
+              {{ getPostPreview(post.content) }}
+            </p>
+            <div class="post-meta">
+              <span class="home-post-author">
+                {{ post.author || '익명' }}
+              </span>
+              <span>{{ formatPostDate(post.createdAt) }}</span>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
   </div>

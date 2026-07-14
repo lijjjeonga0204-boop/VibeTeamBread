@@ -160,3 +160,22 @@ export function deletePost(postId, password) {
   savePosts(nextPosts)
   return existingPost
 }
+
+export function getRecentPosts(limit = 3) {
+  let safeLimit = Number(limit)
+  if (!Number.isFinite(safeLimit) || safeLimit < 1) {
+    safeLimit = 3
+  }
+
+  return getPosts()
+    .slice(0, safeLimit)
+    .map((post) => ({
+      id: post.id,
+      title: post.title,
+      category: post.category,
+      content: post.content,
+      author: post.author,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    }))
+}
