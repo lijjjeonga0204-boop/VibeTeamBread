@@ -943,3 +943,124 @@ a {
     min-width: 130px;
   }
 }
+
+.map-content-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.map-place-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 620px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.map-place-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.map-place-panel-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.map-place-panel-count {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.map-place-list {
+  display: grid;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.map-place-item {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  width: 100%;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    border-color 0.2s ease, background 0.2s ease;
+}
+
+.map-place-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(46, 102, 59, 0.12);
+}
+
+.map-place-item.active {
+  background: rgba(126, 198, 255, 0.16);
+  border-color: rgba(126, 198, 255, 0.8);
+  box-shadow: 0 14px 28px rgba(126, 198, 255, 0.18);
+}
+
+.map-place-item-category {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.map-place-item-title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.map-place-item-address {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .map-content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map-place-panel {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 680px) {
+  .map-content-layout {
+    gap: 16px;
+  }
+
+  .map-wrapper .map-canvas {
+    height: 480px;
+  }
+
+  .map-place-panel {
+    min-height: 360px;
+    padding: 18px;
+  }
+
+  .map-place-list {
+    max-height: 360px;
+  }
+}

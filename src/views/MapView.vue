@@ -15,18 +15,38 @@ import {
   loadCategoryData,
 } from '../services/localDataService.js'
 
+const route = useRoute()
+const router = useRouter()
+
 const mapContainer = ref(null)
 let leafletMap = null
 let markerLayer = null
 
-const route = useRoute()
-const router = useRouter()
-
 const selectedCategory = ref('attractions')
+const selectedPlaceId = ref(null)
 const mapItems = ref([])
 const totalCount = ref(0)
 const isLoading = ref(false)
 const errorMessage = ref('')
+
+const markerByPlaceId = new Map()
+const placeCardElements = new Map()
+
+const DEFAULT_MARKER_STYLE = {
+  radius: 7,
+  color: '#54b3ff',
+  weight: 2,
+  fillColor: '#8edb5c',
+  fillOpacity: 0.75,
+}
+
+const SELECTED_MARKER_STYLE = {
+  radius: 10,
+  color: '#174c7d',
+  weight: 4,
+  fillColor: '#ffd54f',
+  fillOpacity: 1,
+}
 
 const validMapItems = computed(() => {
   return mapItems.value.filter((place) => {
@@ -92,12 +112,74 @@ function createPopupContent(place) {
   return container
 }
 
+function updateMarkerStyles() {
+  const currentId = selectedPlaceId.value
+  markerByPlaceId.forEach((marker, placeId) => {
+    const isSelected = String(placeId) === String(currentId)
+    marker.setStyle(isSelected ? SELECTED_MARKER_STYLE : DEFAULT_MARKER_STYLE)
+  })
+}
+
+function scrollSelectedCardIntoView() {
+  if (!selectedPlaceId.value) {
+    return
+  }
+
+  const card = placeCardElements.get(String(selectedPlaceId.value))
+  if (card && typeof card.scrollIntoView === 'function') {
+    card.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    })
+  }
+}
+
+function selectPlaceFromMarker(place) {
+  selectedPlaceId.value = String(place.id)
+  updateMarkerStyles()
+
+  nextTick(() => {
+    scrollSelectedCardIntoView()
+  })
+}
+
+function selectPlaceFromList(place) {
+  selectedPlaceId.value = String(place.id)
+  updateMarkerStyles()
+
+  if (
+    leafletMap &&
+    Number.isFinite(place.latitude) &&
+    Number.isFinite(place.longitude)
+  ) {
+    leafletMap.flyTo([place.latitude, place.longitude], 14, {
+      animate: true,
+    })
+
+    const marker = markerByPlaceId.get(String(place.id))
+    if (marker && typeof marker.openPopup === 'function') {
+      marker.openPopup()
+    }
+  }
+}
+
+function setPlaceCardRef(element, placeId) {
+  const id = String(placeId)
+
+  if (element) {
+    placeCardElements.set(id, element)
+  } else {
+    placeCardElements.delete(id)
+  }
+}
+
 function renderMarkers() {
   if (!leafletMap || !markerLayer) {
     return
   }
 
   markerLayer.clearLayers()
+  markerByPlaceId.clear()
 
   if (validMapItems.value.length === 0) {
     leafletMap.setView([36.5, 127.5], 8)
@@ -108,17 +190,20 @@ function renderMarkers() {
     const marker = L.circleMarker(
       [place.latitude, place.longitude],
       {
-        radius: 9,
-        color: '#1f4f7f',      // 외곽선 색
-        fillColor: '#ffbf47',  // 채움 색
-        fillOpacity: 0.95,
-        weight: 3,
+        ...DEFAULT_MARKER_STYLE,
       },
     )
 
     marker.bindPopup(createPopupContent(place))
+    marker.on('click', () => {
+      selectPlaceFromMarker(place)
+    })
+
+    markerByPlaceId.set(String(place.id), marker)
     markerLayer.addLayer(marker)
   })
+
+  updateMarkerStyles()
 
   if (validMapItems.value.length === 1) {
     const place = validMapItems.value[0]
@@ -140,6 +225,10 @@ function renderMarkers() {
 }
 
 async function fetchMapData(categoryKey) {
+  selectedPlaceId.value = null
+  markerByPlaceId.clear()
+  placeCardElements.clear()
+
   isLoading.value = true
   errorMessage.value = ''
   mapItems.value = []
@@ -181,9 +270,7 @@ function selectCategory(categoryKey) {
 watch(
   () => route.query.category,
   (newCategory) => {
-    const validCategory = getValidCategory(
-      String(newCategory),
-    )
+    const validCategory = getValidCategory(String(newCategory))
     if (selectedCategory.value !== validCategory) {
       selectedCategory.value = validCategory
     }
@@ -207,6 +294,9 @@ onBeforeUnmount(() => {
     leafletMap = null
     markerLayer = null
   }
+
+  markerByPlaceId.clear()
+  placeCardElements.clear()
 })
 </script>
 
@@ -252,12 +342,48 @@ onBeforeUnmount(() => {
       </p>
     </section>
 
-    <section class="map-wrapper">
-      <div
-        ref="mapContainer"
-        class="map-canvas"
-        :aria-label="`${currentCategory.label} 지도`"
-      />
+    <section class="map-content-layout">
+      <div class="map-wrapper">
+        <div
+            ref="mapContainer"
+            class="map-canvas"
+            :aria-label="`${currentCategory.label} 지도`"
+        ></div>
+      </div>
+
+      <aside class="map-place-panel">
+        <div class="map-place-panel-header">
+          <div>
+            <p class="map-place-panel-title">지도 장소 목록</p>
+            <p class="map-place-panel-count">
+              {{ validMapItems.length }}개의 장소
+            </p>
+          </div>
+        </div>
+
+        <div class="map-place-list">
+          <button
+            v-for="place in validMapItems"
+            :key="place.id"
+            :ref="(element) => setPlaceCardRef(element, place.id)"
+            type="button"
+            class="map-place-item"
+            :class="{ active: selectedPlaceId === String(place.id) }"
+            :aria-pressed="selectedPlaceId === String(place.id)"
+            @click="selectPlaceFromList(place)"
+          >
+            <span class="map-place-item-category">
+              {{ place.category || '카테고리 없음' }}
+            </span>
+            <strong class="map-place-item-title">
+              {{ place.title || '이름 없음' }}
+            </strong>
+            <p class="map-place-item-address">
+              {{ place.address || '주소 정보 없음' }}
+            </p>
+          </button>
+        </div>
+      </aside>
     </section>
   </div>
 </template>
