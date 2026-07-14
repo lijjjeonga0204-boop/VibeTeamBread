@@ -14,9 +14,11 @@ const errorMessage = ref('')
 const failedImages = ref({})
 
 const visibleItems = computed(() => currentCategoryData.value.items.slice(0, 12))
-const currentCategory = computed(() =>
-  CATEGORY_OPTIONS.find((item) => item.key === selectedCategory.value) ||
-  CATEGORY_OPTIONS[0]
+
+const currentCategory = computed(
+  () =>
+    CATEGORY_OPTIONS.find((item) => item.key === selectedCategory.value) ||
+    CATEGORY_OPTIONS[0]
 )
 
 function handleImageError(id) {
@@ -38,17 +40,15 @@ async function fetchCategoryData(categoryKey) {
     const result = await loadCategoryData(categoryKey)
     currentCategoryData.value = result
   } catch (error) {
-    errorMessage.value = error.message || '데이터를 불러오는 중 오류가 발생했습니다.'
+    errorMessage.value =
+      error?.message || '데이터를 불러오는 중 오류가 발생했습니다.'
   } finally {
     isLoading.value = false
   }
 }
 
 function selectCategory(categoryKey) {
-  if (selectedCategory.value === categoryKey) {
-    return
-  }
-
+  if (selectedCategory.value === categoryKey) return
   selectedCategory.value = categoryKey
   fetchCategoryData(categoryKey)
 }
@@ -64,7 +64,8 @@ onMounted(() => {
       <h1>대전·충청권 지역정보</h1>
       <p>관광지부터 음식점, 축제까지 다양한 지역정보를 확인해 보세요.</p>
       <p class="place-count">
-        전체 {{ currentCategory.value.label }} 수: {{ currentCategoryData.value.total }}개
+        전체 {{ currentCategory.value.label }} 수:
+        {{ currentCategoryData.value.total }}개
       </p>
     </section>
 
@@ -85,10 +86,7 @@ onMounted(() => {
     <section class="place-status">
       <p v-if="isLoading">관광지 정보를 불러오는 중입니다.</p>
       <p v-else-if="errorMessage" class="place-error">{{ errorMessage }}</p>
-      <p
-        v-else-if="!visibleItems.length"
-        class="place-empty"
-      >
+      <p v-else-if="!visibleItems.length" class="place-empty">
         표시할 관광지가 없습니다.
       </p>
     </section>
@@ -97,11 +95,7 @@ onMounted(() => {
       class="place-list"
       v-if="!isLoading && !errorMessage && visibleItems.length"
     >
-      <div
-        class="place-card"
-        v-for="place in visibleItems"
-        :key="place.id"
-      >
+      <div class="place-card" v-for="place in visibleItems" :key="place.id">
         <div class="place-image-wrap">
           <img
             v-if="place.image && !failedImages[place.id]"

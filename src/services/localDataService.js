@@ -69,6 +69,7 @@ export async function loadCategoryData(categoryKey) {
   }
 
   const category = data.contentType || option.label
+
   const items = data.items.map((item) => {
     const addressParts = [item.addr1, item.addr2].filter(Boolean)
     const rawImage = item.firstimage || ''
