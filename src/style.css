@@ -1,13 +1,14 @@
 :root {
-  --bg: #f7f9fc;
+  --bg: #fffde3; /* 부드러운 버터 옐로우 배경 */
   --surface: #ffffff;
-  --surface-strong: #e6eef9;
-  --text: #142850;
-  --text-muted: #5f6c8c;
-  --primary: #2563eb;
-  --primary-soft: #e5efff;
-  --border: #d4dce7;
-  --shadow: 0 10px 30px rgba(14, 46, 105, 0.08);
+  --surface-strong: #f5ffdf; /* 연한 연두빛 카드 배경 */
+  --text: #2f4f2a; /* 진한 초록 계열 텍스트 */
+  --text-muted: #6f8b5d;
+  --primary: #8edb5c; /* 연두색 계열 버튼 */
+  --primary-soft: #e9f8b8; /* 연두색 소프트 배경 */
+  --accent: #7ec6ff; /* 하늘색 액센트 */
+  --border: #dce8d5;
+  --shadow: 0 10px 30px rgba(46, 102, 59, 0.12);
 }
 
 * {
@@ -67,11 +68,19 @@ button {
   border-radius: 999px;
   background: transparent;
   color: var(--text);
-  transition: background 0.2s ease;
+  transform: translateY(-3px) perspective(600px) rotateX(2deg);
+  box-shadow: 0 16px 28px rgba(46, 102, 59, 0.18);
 }
 
 .main-nav button:hover {
   background: var(--surface-strong);
+  transform: translateY(-3px) perspective(600px) rotateX(2deg);
+  box-shadow: 0 16px 28px rgba(46, 102, 59, 0.18);
+}
+
+.main-nav button:active {
+  transform: translateY(1px);
+  box-shadow: 0 8px 16px rgba(46, 102, 59, 0.14);
 }
 
 .main-content {
@@ -82,7 +91,7 @@ button {
 .hero-section {
   padding: 32px;
   border-radius: 24px;
-  background: linear-gradient(135deg, #eff6ff, #ffffff);
+  background: linear-gradient(135deg, #fffde3, #d8f0ff);
   box-shadow: var(--shadow);
 }
 
@@ -129,9 +138,9 @@ button {
 }
 
 .secondary-button {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
+  background: #fffd74;
+  color: #2f4f2a;
+  border: 1px solid #f7f1a0;
 }
 
 .categories-section,
@@ -228,13 +237,24 @@ button {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--accent);
   color: white;
   font-size: 1.6rem;
-  box-shadow: 0 18px 30px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 18px 30px rgba(126, 198, 255, 0.28);
   display: grid;
   place-items: center;
   border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chatbot-button:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 20px 34px rgba(126, 198, 255, 0.24);
+}
+
+.chatbot-button:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 10px 18px rgba(126, 198, 255, 0.20);
 }
 
 @media (max-width: 840px) {
