@@ -1,13 +1,13 @@
 <script setup>
 const categories = [
-  { emoji: '🗺️', label: '관광지' },
-  { emoji: '🚴', label: '레포츠' },
-  { emoji: '🎭', label: '문화시설' },
-  { emoji: '🛍️', label: '쇼핑' },
-  { emoji: '🛏️', label: '숙박' },
-  { emoji: '🗺️', label: '여행코스' },
-  { emoji: '🍜', label: '음식점' },
-  { emoji: '🎉', label: '축제·공연·행사' }
+  { key: 'attractions', emoji: '🗺️', label: '관광지' },
+  { key: 'leisure', emoji: '🚴', label: '레포츠' },
+  { key: 'culture', emoji: '🎭', label: '문화시설' },
+  { key: 'shopping', emoji: '🛍️', label: '쇼핑' },
+  { key: 'accommodations', emoji: '🛏️', label: '숙박' },
+  { key: 'courses', emoji: '🗺️', label: '여행코스' },
+  { key: 'restaurants', emoji: '🍜', label: '음식점' },
+  { key: 'festivals', emoji: '🎉', label: '축제·공연·행사' }
 ]
 
 const recentPosts = [
@@ -40,15 +40,21 @@ const recentPosts = [
     <section class="categories-section">
       <h2>카테고리</h2>
       <div class="categories-grid">
-        <button
-          v-for="item in categories"
-          :key="item.label"
-          type="button"
-          class="category-card"
+        <RouterLink
+            v-for="item in categories"
+            :key="item.key"
+            :to="{
+                path: '/places',
+                query: {
+                    category: item.key
+                }
+            }"
+            class="category-card"
+            :aria-label="`${item.label} 지역정보 보기`"
         >
-          <span class="category-emoji">{{ item.emoji }}</span>
-          <span>{{ item.label }}</span>
-        </button>
+            <span class="category-emoji">{{ item.emoji }}</span>
+            <span>{{ item.label }}</span>
+            </RouterLink>
       </div>
     </section>
 

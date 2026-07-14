@@ -1,11 +1,29 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   CATEGORY_OPTIONS,
   loadCategoryData,
 } from '../services/localDataService.js'
 
-const selectedCategory = ref('attractions')
+const route = useRoute()
+const router = useRouter()
+
+function resolveCategoryKey(categoryQuery) {
+  const categoryKey = Array.isArray(categoryQuery)
+    ? categoryQuery[0]
+    : categoryQuery
+
+  const isValidCategory = CATEGORY_OPTIONS.some(
+    (option) => option.key === categoryKey,
+  )
+
+  return isValidCategory ? categoryKey : 'attractions'
+}
+
+const selectedCategory = ref(
+  resolveCategoryKey(route.query.category),
+)
 
 const currentCategoryData = ref({
   key: 'attractions',
@@ -156,15 +174,37 @@ async function selectCategory(categoryKey) {
     return
   }
 
-  selectedCategory.value = categoryKey
-  searchKeyword.value = ''
-  currentPage.value = 1
-  await fetchCategoryData(categoryKey)
+  await router.push({
+    path: '/places',
+    query: {
+      category: categoryKey,
+    },
+  })
 }
 
 watch(searchKeyword, () => {
   currentPage.value = 1
 })
+
+watch(
+  () => route.query.category,
+  async (categoryQuery) => {
+    const categoryKey = resolveCategoryKey(categoryQuery)
+
+    if (
+      selectedCategory.value === categoryKey &&
+      currentCategoryData.value.items.length > 0
+    ) {
+      return
+    }
+
+    selectedCategory.value = categoryKey
+    searchKeyword.value = ''
+    currentPage.value = 1
+
+    await fetchCategoryData(categoryKey)
+  },
+)
 
 onMounted(() => {
   fetchCategoryData(selectedCategory.value)
@@ -265,39 +305,49 @@ onMounted(() => {
       "
       class="place-list"
     >
-      <article
+      <RouterLink
         v-for="place in visibleItems"
         :key="place.id"
-        class="place-card"
+        :to="{
+          name: 'PlaceDetail',
+          params: {
+            categoryKey: selectedCategory,
+            placeId: place.id
+          }
+        }"
+        class="place-card-link"
+        :aria-label="'지역정보 상세 보기: ' + place.title"
       >
-        <div class="place-image-wrap">
-          <img
-            v-if="place.image && !failedImages[place.id]"
-            :src="place.image"
-            :alt="place.title"
-            class="place-image"
-            @error="handleImageError(place.id)"
-          />
+        <article class="place-card">
+          <div class="place-image-wrap">
+            <img
+              v-if="place.image && !failedImages[place.id]"
+              :src="place.image"
+              :alt="place.title"
+              class="place-image"
+              @error="handleImageError(place.id)"
+            />
 
-          <div class="place-image-empty">
-            이미지 준비 중
+            <div class="place-image-empty">
+              이미지 준비 중
+            </div>
           </div>
-        </div>
 
-        <div class="place-info">
-          <span class="place-category">
-            {{ place.category }}
-          </span>
+          <div class="place-info">
+            <span class="place-category">
+              {{ place.category }}
+            </span>
 
-          <h2 class="place-title">
-            {{ place.title }}
-          </h2>
+            <h2 class="place-title">
+              {{ place.title }}
+            </h2>
 
-          <p class="place-address">
-            {{ place.address || '주소 정보 없음' }}
-          </p>
-        </div>
-      </article>
+            <p class="place-address">
+              {{ place.address || '주소 정보 없음' }}
+            </p>
+          </div>
+        </article>
+      </RouterLink>
     </section>
 
     <section

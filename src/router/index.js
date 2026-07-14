@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RegionInfoView from '../views/RegionInfoView.vue'
+import PlaceDetailView from '../views/PlaceDetailView.vue'
 import BoardListView from '../views/BoardListView.vue'
 import MapView from '../views/MapView.vue'
 
@@ -14,6 +15,11 @@ const routes = [
     path: '/places',
     name: 'RegionInfo',
     component: RegionInfoView
+  },
+  {
+    path: '/places/:categoryKey/:placeId',
+    name: 'PlaceDetail',
+    component: PlaceDetailView
   },
   {
     path: '/board',
