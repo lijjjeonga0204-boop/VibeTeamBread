@@ -95,20 +95,48 @@ function createMap() {
 }
 
 function createPopupContent(place) {
-  const container = document.createElement('div')
+  const safePlace = place || {}
 
-  const title = document.createElement('p')
-  title.style.fontWeight = '700'
-  title.textContent = place.title || '정보 없음'
+  const container = document.createElement('div')
+  container.className = 'map-popup-card'
+
+  if (safePlace.image) {
+    const image = document.createElement('img')
+    image.className = 'map-popup-image'
+    image.src = safePlace.image
+    image.alt = `${safePlace.title || '장소'} 대표 이미지`
+    image.loading = 'lazy'
+    image.addEventListener('error', () => {
+      image.style.display = 'none'
+    })
+    container.appendChild(image)
+  }
+
+  const body = document.createElement('div')
+  body.className = 'map-popup-body'
 
   const category = document.createElement('p')
-  category.textContent = place.category || '정보 없음'
+  category.className = 'map-popup-category'
+  category.textContent = safePlace.category || '카테고리 없음'
+  body.appendChild(category)
+
+  const title = document.createElement('p')
+  title.className = 'map-popup-title'
+  title.textContent = safePlace.title || '이름 없음'
+  body.appendChild(title)
 
   const address = document.createElement('p')
-  address.textContent = place.address || '주소 정보 없음'
+  address.className = 'map-popup-address'
+  address.textContent = safePlace.address || '주소 정보 없음'
+  body.appendChild(address)
 
-  container.append(title, category, address)
+  const telephone = document.createElement('p')
+  telephone.className = 'map-popup-telephone'
+  telephone.textContent =
+    safePlace.telephone || '전화번호 정보 없음'
+  body.appendChild(telephone)
 
+  container.appendChild(body)
   return container
 }
 
@@ -187,16 +215,24 @@ function renderMarkers() {
   }
 
   validMapItems.value.forEach((place) => {
-    const marker = L.circleMarker(
-      [place.latitude, place.longitude],
-      {
-        ...DEFAULT_MARKER_STYLE,
-      },
-    )
+    const marker = L.circleMarker([place.latitude, place.longitude], {
+      ...DEFAULT_MARKER_STYLE,
+    })
 
-    marker.bindPopup(createPopupContent(place))
+    marker.bindPopup(createPopupContent(place), {
+      maxWidth: 280,
+      minWidth: 220,
+      closeButton: true,
+      autoPan: true,
+      autoPanPadding: [24, 24],
+      className: 'map-place-popup',
+    })
+
     marker.on('click', () => {
       selectPlaceFromMarker(place)
+      if (typeof marker.openPopup === 'function') {
+        marker.openPopup()
+      }
     })
 
     markerByPlaceId.set(String(place.id), marker)
