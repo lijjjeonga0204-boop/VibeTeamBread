@@ -11,21 +11,9 @@ const categories = [
 ]
 
 const recentPosts = [
-  {
-    title: '대전 동구 숨은 맛집 탐방기',
-    date: '2026-07-12',
-    category: '음식점'
-  },
-  {
-    title: '충청권 여름 축제 추천 3곳',
-    date: '2026-07-08',
-    category: '축제·공연·행사'
-  },
-  {
-    title: '아이들과 함께 가기 좋은 문화시설',
-    date: '2026-07-05',
-    category: '문화시설'
-  }
+  { title: '대전 동구 숨은 맛집 탐방기', date: '2026-07-12', category: '음식점' },
+  { title: '충청권 여름 축제 추천 3곳', date: '2026-07-08', category: '축제·공연·행사' },
+  { title: '아이들과 함께 가기 좋은 문화시설', date: '2026-07-05', category: '문화시설' }
 ]
 </script>
 
