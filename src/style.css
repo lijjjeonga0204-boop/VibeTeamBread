@@ -1,12 +1,12 @@
 :root {
-  --bg: #fffde3; /* 부드러운 버터 옐로우 배경 */
+  --bg: #fffde3;
   --surface: #ffffff;
-  --surface-strong: #f5ffdf; /* 연한 연두빛 카드 배경 */
-  --text: #2f4f2a; /* 진한 초록 계열 텍스트 */
+  --surface-strong: #f5ffdf;
+  --text: #2f4f2a;
   --text-muted: #6f8b5d;
-  --primary: #8edb5c; /* 연두색 계열 버튼 */
-  --primary-soft: #e9f8b8; /* 연두색 소프트 배경 */
-  --accent: #7ec6ff; /* 하늘색 액센트 */
+  --primary: #8edb5c;
+  --primary-soft: #e9f8b8;
+  --accent: #7ec6ff;
   --border: #dce8d5;
   --shadow: 0 10px 30px rgba(46, 102, 59, 0.12);
 }
@@ -32,6 +32,11 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .app-container {
@@ -63,29 +68,43 @@ button {
   list-style: none;
 }
 
-.main-nav button {
+.main-nav .nav-link {
+  display: inline-flex;
+  align-items: center;
   padding: 10px 14px;
   border-radius: 999px;
   background: transparent;
   color: var(--text);
-  transform: translateY(-3px) perspective(600px) rotateX(2deg);
-  box-shadow: 0 16px 28px rgba(46, 102, 59, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.main-nav button:hover {
+.main-nav .nav-link:hover {
   background: var(--surface-strong);
-  transform: translateY(-3px) perspective(600px) rotateX(2deg);
-  box-shadow: 0 16px 28px rgba(46, 102, 59, 0.18);
 }
 
-.main-nav button:active {
-  transform: translateY(1px);
-  box-shadow: 0 8px 16px rgba(46, 102, 59, 0.14);
+.main-nav .nav-link.active {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 10px 22px rgba(126, 198, 255, 0.18);
 }
 
 .main-content {
   display: grid;
   gap: 32px;
+}
+
+.page-view {
+  min-height: calc(100vh - 140px);
+  padding: 24px 0;
+}
+
+.empty-view {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  min-height: 320px;
 }
 
 .hero-section {
@@ -127,20 +146,42 @@ button {
 
 .primary-button,
 .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 14px 22px;
   border-radius: 999px;
   font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .primary-button {
   background: var(--primary);
   color: white;
+  box-shadow: 0 10px 24px rgba(142, 219, 92, 0.22);
+}
+
+.primary-button:hover {
+  transform: translateY(-3px) perspective(600px) rotateX(2deg);
+}
+
+.primary-button:active {
+  transform: translateY(1px);
 }
 
 .secondary-button {
   background: #fffd74;
   color: #2f4f2a;
   border: 1px solid #f7f1a0;
+  box-shadow: 0 10px 24px rgba(255, 253, 116, 0.22);
+}
+
+.secondary-button:hover {
+  transform: translateY(-3px) perspective(600px) rotateX(2deg);
+}
+
+.secondary-button:active {
+  transform: translateY(1px);
 }
 
 .categories-section,
@@ -172,11 +213,12 @@ button {
   border-radius: 18px;
   background: var(--surface-strong);
   color: var(--text);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .category-card:hover {
   transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(46, 102, 59, 0.12);
 }
 
 .category-emoji {

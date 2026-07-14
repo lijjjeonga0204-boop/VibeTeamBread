@@ -1,6 +1,4 @@
 <script setup>
-const navItems = ['홈', '지역정보', '커뮤니티', '지도']
-
 const categories = [
   { emoji: '🗺️', label: '관광지' },
   { emoji: '🚴', label: '레포츠' },
@@ -32,67 +30,54 @@ const recentPosts = [
 </script>
 
 <template>
-  <div class="app-container">
-    <header class="page-header">
-      <div class="logo">LocalHub</div>
-      <nav class="main-nav" aria-label="메인 메뉴">
-        <ul>
-          <li v-for="item in navItems" :key="item">
-            <button type="button">{{ item }}</button>
-          </li>
-        </ul>
-      </nav>
-    </header>
+  <div class="page-view">
+    <section class="hero-section">
+      <div class="hero-text">
+        <p class="eyebrow">대전·충청권 지역정보 서비스</p>
+        <h1>대전·충청권의 모든 지역정보를 한곳에서</h1>
+        <p class="hero-description">
+          관광지부터 맛집, 축제, 여행 이야기까지 지역의 다양한 정보를 확인하고 공유해 보세요.
+        </p>
+        <div class="hero-actions">
+          <RouterLink to="/places" class="primary-button">
+            지역정보 둘러보기
+          </RouterLink>
+          <RouterLink to="/board" class="secondary-button">
+            커뮤니티 가기
+          </RouterLink>
+        </div>
+      </div>
+    </section>
 
-    <main class="main-content">
-      <section class="hero-section">
-        <div class="hero-text">
-          <p class="eyebrow">대전·충청권 지역정보 서비스</p>
-          <h1>대전·충청권의 모든 지역정보를 한곳에서</h1>
-          <p class="hero-description">
-            관광지부터 맛집, 축제, 여행 이야기까지 지역의 다양한 정보를 확인하고 공유해 보세요.
-          </p>
-          <div class="hero-actions">
-            <button type="button" class="primary-button">지역정보 둘러보기</button>
-            <button type="button" class="secondary-button">커뮤니티 가기</button>
+    <section class="categories-section">
+      <h2>카테고리</h2>
+      <div class="categories-grid">
+        <button
+          v-for="item in categories"
+          :key="item.label"
+          type="button"
+          class="category-card"
+        >
+          <span class="category-emoji">{{ item.emoji }}</span>
+          <span>{{ item.label }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="posts-section">
+      <div class="section-header">
+        <h2>최근 게시글</h2>
+        <p>예시 게시글을 통해 화면 구성을 확인하세요.</p>
+      </div>
+      <div class="posts-list">
+        <article v-for="post in recentPosts" :key="post.title" class="post-card">
+          <h3>{{ post.title }}</h3>
+          <div class="post-meta">
+            <span>{{ post.date }}</span>
+            <span class="post-category">{{ post.category }}</span>
           </div>
-        </div>
-      </section>
-
-      <section class="categories-section">
-        <h2>카테고리</h2>
-        <div class="categories-grid">
-          <button
-            v-for="item in categories"
-            :key="item.label"
-            type="button"
-            class="category-card"
-          >
-            <span class="category-emoji">{{ item.emoji }}</span>
-            <span>{{ item.label }}</span>
-          </button>
-        </div>
-      </section>
-
-      <section class="posts-section">
-        <div class="section-header">
-          <h2>최근 게시글</h2>
-          <p>예시 게시글을 통해 화면 구성을 확인하세요.</p>
-        </div>
-        <div class="posts-list">
-          <article v-for="post in recentPosts" :key="post.title" class="post-card">
-            <h3>{{ post.title }}</h3>
-            <div class="post-meta">
-              <span>{{ post.date }}</span>
-              <span class="post-category">{{ post.category }}</span>
-            </div>
-          </article>
-        </div>
-      </section>
-    </main>
-
-    <button type="button" class="chatbot-button" aria-label="챗봇 열기">
-      💬
-    </button>
+        </article>
+      </div>
+    </section>
   </div>
 </template>
