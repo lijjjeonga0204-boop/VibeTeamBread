@@ -17,13 +17,7 @@ const currentCategoryData = ref({
 const isLoading = ref(false)
 const errorMessage = ref('')
 const failedImages = ref({})
-
-/*
- * script 영역에서는 ref 값을 사용할 때 .value가 필요하다.
- */
-const visibleItems = computed(() =>
-  currentCategoryData.value.items.slice(0, 12),
-)
+const searchKeyword = ref('')
 
 const currentCategory = computed(() => {
   return (
@@ -32,6 +26,25 @@ const currentCategory = computed(() => {
     ) || CATEGORY_OPTIONS[0]
   )
 })
+
+const filteredItems = computed(() => {
+  const keyword = searchKeyword.value.trim().toLowerCase()
+
+  if (!keyword) {
+    return currentCategoryData.value.items
+  }
+
+  return currentCategoryData.value.items.filter((place) => {
+    const title = (place.title || '').toLowerCase()
+    const address = (place.address || '').toLowerCase()
+
+    return title.includes(keyword) || address.includes(keyword)
+  })
+})
+
+const visibleItems = computed(() =>
+  filteredItems.value.slice(0, 12),
+)
 
 function handleImageError(id) {
   failedImages.value = {
@@ -44,11 +57,6 @@ async function fetchCategoryData(categoryKey) {
   isLoading.value = true
   errorMessage.value = ''
   failedImages.value = {}
-
-  /*
-   * 카테고리를 변경할 때 이전 카테고리의 카드가
-   * 잠시 남지 않도록 데이터를 초기화한다.
-   */
   currentCategoryData.value = {
     key: categoryKey,
     label: '',
@@ -77,6 +85,7 @@ async function selectCategory(categoryKey) {
   }
 
   selectedCategory.value = categoryKey
+  searchKeyword.value = ''
   await fetchCategoryData(categoryKey)
 }
 
@@ -95,8 +104,13 @@ onMounted(() => {
       </p>
 
       <p class="place-count">
-        전체 {{ currentCategory.label }} 수:
-        {{ currentCategoryData.total }}개
+        <span v-if="searchKeyword">
+          검색 결과 {{ filteredItems.length }}개
+        </span>
+        <span v-else>
+          전체 {{ currentCategory.label }} 수:
+          {{ currentCategoryData.total }}개
+        </span>
       </p>
     </section>
 
@@ -118,7 +132,35 @@ onMounted(() => {
       </button>
     </section>
 
-    <section class="place-status" aria-live="polite">
+    <section class="place-search">
+      <label class="place-search-label" for="place-search-input">
+        지역정보 검색
+      </label>
+
+      <div class="place-search-row">
+        <input
+          id="place-search-input"
+          class="place-search-input"
+          type="search"
+          v-model="searchKeyword"
+          placeholder="장소명 또는 주소를 입력하세요"
+        />
+
+        <button
+          v-if="searchKeyword"
+          type="button"
+          class="place-search-clear"
+          @click="searchKeyword = ''"
+        >
+          초기화
+        </button>
+      </div>
+    </section>
+
+    <section
+      class="place-status"
+      aria-live="polite"
+    >
       <p v-if="isLoading">
         {{ currentCategory.label }} 정보를 불러오는 중입니다.
       </p>
@@ -131,7 +173,14 @@ onMounted(() => {
       </p>
 
       <p
-        v-else-if="visibleItems.length === 0"
+        v-else-if="searchKeyword && filteredItems.length === 0"
+        class="place-empty"
+      >
+        검색 조건에 맞는 지역정보가 없습니다.
+      </p>
+
+      <p
+        v-else-if="!searchKeyword && filteredItems.length === 0"
         class="place-empty"
       >
         표시할 {{ currentCategory.label }} 정보가 없습니다.
