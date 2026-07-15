@@ -52,7 +52,7 @@ const DEFAULT_MARKER_STYLE = {
 
 const SELECTED_MARKER_STYLE = {
   radius: 11,
-  color: '#ffffff',
+  color: '#fffff0',
   weight: 2,
   fillColor: '#ffffff',
   fillOpacity: 1,
