@@ -32,20 +32,43 @@ const errorMessage = ref('')
 const markerByPlaceId = new Map()
 const placeCardElements = new Map()
 
+const CATEGORY_MARKER_STYLES = {
+  attractions: { color: '#2e7d32', fillColor: '#7cb342' },
+  leisure: { color: '#1565c0', fillColor: '#42a5f5' },
+  culture: { color: '#6a1b9a', fillColor: '#ba68c8' },
+  shopping: { color: '#ef6c00', fillColor: '#ffb74d' },
+  accommodations: { color: '#00897b', fillColor: '#4db6ac' },
+  courses: { color: '#d81b60', fillColor: '#f06292' },
+  restaurants: { color: '#c62828', fillColor: '#ef5350' },
+  festivals: { color: '#5e35b1', fillColor: '#9575cd' },
+}
+
 const DEFAULT_MARKER_STYLE = {
   radius: 7,
-  color: '#54b3ff',
   weight: 2,
-  fillColor: '#8edb5c',
-  fillOpacity: 0.75,
+  fillOpacity: 0.8,
 }
 
 const SELECTED_MARKER_STYLE = {
   radius: 10,
-  color: '#174c7d',
+  color: '#1f2937',
   weight: 4,
-  fillColor: '#ffd54f',
+  fillColor: '#ff7a59',
   fillOpacity: 1,
+}
+
+function getMarkerStyle(isSelected = false) {
+  const palette =
+    CATEGORY_MARKER_STYLES[selectedCategory.value] ||
+    CATEGORY_MARKER_STYLES.attractions
+
+  return isSelected
+    ? SELECTED_MARKER_STYLE
+    : {
+        ...DEFAULT_MARKER_STYLE,
+        color: palette.color,
+        fillColor: palette.fillColor,
+      }
 }
 
 const validMapItems = computed(() => {
@@ -144,7 +167,7 @@ function updateMarkerStyles() {
   const currentId = selectedPlaceId.value
   markerByPlaceId.forEach((marker, placeId) => {
     const isSelected = String(placeId) === String(currentId)
-    marker.setStyle(isSelected ? SELECTED_MARKER_STYLE : DEFAULT_MARKER_STYLE)
+    marker.setStyle(getMarkerStyle(isSelected))
   })
 }
 
@@ -216,7 +239,7 @@ function renderMarkers() {
 
   validMapItems.value.forEach((place) => {
     const marker = L.circleMarker([place.latitude, place.longitude], {
-      ...DEFAULT_MARKER_STYLE,
+      ...getMarkerStyle(false),
     })
 
     marker.bindPopup(createPopupContent(place), {
