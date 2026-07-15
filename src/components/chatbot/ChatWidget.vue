@@ -14,9 +14,21 @@ const lastSent = ref("");
 const panelRef = ref(null);
 const listRef = ref(null);
 
-function toggleOpen() {
+const chatInputRef = ref(null);
+
+function focusInput() {
+  if (chatInputRef.value) {
+    chatInputRef.value.focus();
+  }
+}
+
+async function toggleOpen() {
   isChatOpen.value = !isChatOpen.value;
   errorMessage.value = "";
+  if (isChatOpen.value) {
+    await nextTick();
+    focusInput();
+  }
 }
 
 function pushMessage(role, text) {
@@ -81,7 +93,8 @@ async function send() {
     errorMessage.value = e.message || "서버와 통신중 오류가 발생했습니다.";
   } finally {
     isLoading.value = false;
-  }
+    await nextTick();
+    focusInput();
 }
 
 function onKeydown(e) {
@@ -121,6 +134,7 @@ function scrollToBottom() {
 
       <footer class="chat-footer">
         <textarea
+          ref="chatInputRef"
           v-model="inputText"
           @keydown="onKeydown"
           :disabled="isLoading"
