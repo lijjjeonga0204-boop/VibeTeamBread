@@ -50,7 +50,7 @@ const DEFAULT_MARKER_STYLE = {
 }
 
 const SELECTED_MARKER_STYLE = {
-  radius: 10,
+  radius: 11,
   color: '#1f2937',
   weight: 4,
   fillColor: '#ff7a59',
