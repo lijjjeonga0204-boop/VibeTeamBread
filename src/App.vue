@@ -4,6 +4,7 @@ import ChatWidget from "./components/chatbot/ChatWidget.vue";
 const navItems = [
   { label: '홈', to: '/' },
   { label: '지역정보', to: '/places' },
+  { label: '축제 캘린더', to: '/calendar' },
   { label: '커뮤니티', to: '/board' },
   { label: '지도', to: '/map' }
 ]
