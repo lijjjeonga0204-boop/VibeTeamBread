@@ -33,27 +33,28 @@ const markerByPlaceId = new Map()
 const placeCardElements = new Map()
 
 const CATEGORY_MARKER_STYLES = {
-  attractions: { color: '#2e7d32', fillColor: '#7cb342' },
-  leisure: { color: '#1565c0', fillColor: '#42a5f5' },
-  culture: { color: '#6a1b9a', fillColor: '#ba68c8' },
-  shopping: { color: '#ef6c00', fillColor: '#ffb74d' },
-  accommodations: { color: '#00897b', fillColor: '#4db6ac' },
-  courses: { color: '#d81b60', fillColor: '#f06292' },
-  restaurants: { color: '#c62828', fillColor: '#ef5350' },
-  festivals: { color: '#5e35b1', fillColor: '#9575cd' },
+  attractions: { color: '#0000FF', fillColor: '#0000FF' },
+  leisure: { color: '#008000', fillColor: '#008000' },
+  culture: { color: '#0EB4FC', fillColor: '#0EB4FC' },
+  shopping: { color: '#D62598', fillColor: '#D62598' },
+  accommodations: { color: '#4c00b0', fillColor: '#4c00b0' },
+  courses: { color: '#808080', fillColor: '#808080' },
+  restaurants: { color: '#FF0000', fillColor: '#FF0000' },
+  festivals: { color: '#FF6A00', fillColor: '#FF6A00' },
 }
 
 const DEFAULT_MARKER_STYLE = {
   radius: 7,
-  weight: 2,
-  fillOpacity: 0.8,
+  weight: 1.5,
+  opacity: 1,
+  fillOpacity: 0.5,
 }
 
 const SELECTED_MARKER_STYLE = {
   radius: 11,
-  color: '#1f2937',
-  weight: 4,
-  fillColor: '#ff7a59',
+  color: '#fffff0',
+  weight: 2,
+  fillColor: '#ffffff',
   fillOpacity: 1,
 }
 
