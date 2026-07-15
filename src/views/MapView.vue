@@ -316,6 +316,31 @@ async function fetchMapData(categoryKey) {
   }
 }
 
+async function tryFocusPlaceFromQuery() {
+  const targetId = route.query.placeId ? String(route.query.placeId) : null
+  if (!targetId) return
+
+  const queryCategory = getValidCategory(String(route.query.category))
+  const categoryKeys = [
+    queryCategory,
+    ...CATEGORY_OPTIONS.map((item) => item.key).filter((key) => key !== queryCategory),
+  ]
+
+  for (const key of categoryKeys) {
+    if (selectedCategory.value !== key) {
+      selectedCategory.value = key
+      router.replace({ path: '/map', query: { category: key, placeId: targetId } })
+      await fetchMapData(key)
+    }
+
+    const found = mapItems.value.find((p) => String(p.id) === targetId)
+    if (found) {
+      selectPlaceFromList(found)
+      return
+    }
+  }
+}
+
 function selectCategory(categoryKey) {
   if (selectedCategory.value === categoryKey) {
     return
@@ -338,14 +363,15 @@ watch(
   },
 )
 
-onMounted(() => {
+onMounted(async () => {
   createMap()
 
-  const initialCategory = getValidCategory(
-    String(route.query.category),
-  )
+  const initialCategory = getValidCategory(String(route.query.category))
   selectedCategory.value = initialCategory
-  fetchMapData(initialCategory)
+  await fetchMapData(initialCategory)
+
+  // route.query.placeId가 있으면 마커 렌더 완료 후 포커스 시도
+  await tryFocusPlaceFromQuery()
 })
 
 onBeforeUnmount(() => {

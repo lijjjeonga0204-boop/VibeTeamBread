@@ -1,4 +1,6 @@
 <script setup>
+import ChatWidget from "./components/chatbot/ChatWidget.vue";
+
 const navItems = [
   { label: '홈', to: '/' },
   { label: '지역정보', to: '/places' },
@@ -30,10 +32,10 @@ const navItems = [
 
     <main class="main-content">
       <RouterView />
+
+      <ChatWidget />
+
     </main>
 
-    <button type="button" class="chatbot-button" aria-label="챗봇 열기">
-      💬
-    </button>
   </div>
 </template>
