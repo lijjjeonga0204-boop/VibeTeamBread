@@ -104,10 +104,6 @@ function openDeleteModal(post) {
 }
 
 function closeActionModal() {
-  if (isProcessingAction.value) {
-    return
-  }
-
   isActionModalOpen.value = false
   actionMode.value = ''
   selectedPostId.value = ''
