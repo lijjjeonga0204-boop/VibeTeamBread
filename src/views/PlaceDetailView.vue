@@ -29,9 +29,7 @@ const mapLink = computed(() => {
   return {
     path: '/map',
     query: {
-      lat: place.value.latitude,
-      lng: place.value.longitude,
-      title: place.value.title
+      placeId: String(place.value.id)
     }
   }
 })

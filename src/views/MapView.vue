@@ -316,6 +316,41 @@ async function fetchMapData(categoryKey) {
   }
 }
 
+async function tryFocusPlaceFromQuery() {
+  const targetId = route.query.placeId ? String(route.query.placeId) : null
+  if (!targetId) return
+
+  // 1) 현재 로드된 항목에서 찾기
+  let found = mapItems.value.find((p) => String(p.id) === targetId)
+  if (found) {
+    selectPlaceFromList(found)
+    return
+  }
+
+  // 2) 다른 카테고리에서 찾기 (발견 시 카테고리 변경 후 재로딩)
+  for (const opt of CATEGORY_OPTIONS) {
+    const key = opt.key
+    if (key === selectedCategory.value) continue
+    try {
+      const result = await loadCategoryData(key)
+      const item = result.items.find((i) => String(i.id) === targetId)
+      if (item) {
+        selectedCategory.value = key
+        // URL에 카테고리도 반영(placeId 유지)
+        router.replace({ path: '/map', query: { category: key, placeId: targetId } })
+        await fetchMapData(key)
+        const foundAfter = mapItems.value.find((p) => String(p.id) === targetId)
+        if (foundAfter) {
+          selectPlaceFromList(foundAfter)
+        }
+        return
+      }
+    } catch (e) {
+      // 무시하고 다음 카테고리 검사
+    }
+  }
+}
+
 function selectCategory(categoryKey) {
   if (selectedCategory.value === categoryKey) {
     return
@@ -338,14 +373,15 @@ watch(
   },
 )
 
-onMounted(() => {
+onMounted(async () => {
   createMap()
 
-  const initialCategory = getValidCategory(
-    String(route.query.category),
-  )
+  const initialCategory = getValidCategory(String(route.query.category))
   selectedCategory.value = initialCategory
-  fetchMapData(initialCategory)
+  await fetchMapData(initialCategory)
+
+  // route.query.placeId가 있으면 마커 렌더 완료 후 포커스 시도
+  await tryFocusPlaceFromQuery()
 })
 
 onBeforeUnmount(() => {
