@@ -29,7 +29,8 @@ const mapLink = computed(() => {
   return {
     path: '/map',
     query: {
-      placeId: String(place.value.id)
+      placeId: String(place.value.id),
+      category: categoryKey
     }
   }
 })
