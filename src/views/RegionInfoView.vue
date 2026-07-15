@@ -327,8 +327,7 @@ onMounted(() => {
               class="place-image"
               @error="handleImageError(place.id)"
             />
-
-            <div class="place-image-empty">
+            <div v-else class="place-image-empty">
               이미지 준비 중
             </div>
           </div>
