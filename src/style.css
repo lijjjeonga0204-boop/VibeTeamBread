@@ -1356,7 +1356,7 @@ a {
 .map-popup-body {
   padding: 16px;
   display: grid;
-  gap: 10px;
+  gap: 0px;
 }
 
 .map-popup-category {
@@ -1375,13 +1375,13 @@ a {
   font-size: 1rem;
   font-weight: 800;
   line-height: 1.4;
-  color: #21433d;
+  color: #000000;
 }
 
 .map-popup-address,
 .map-popup-telephone {
   margin: 0;
-  color: #556b57;
+  color: #7a7a7a;
   font-size: 0.92rem;
   line-height: 1.5;
   white-space: pre-wrap;
