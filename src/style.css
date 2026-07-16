@@ -1269,6 +1269,10 @@ a {
   gap: 12px;
 }
 
+.map-popup-card p {
+  margin: 5px
+}
+
 .board-post-category {
   display: inline-flex;
   padding: 6px 12px;
