@@ -98,6 +98,17 @@ a {
   padding: 24px 0;
 }
 
+.home-page {
+  display: grid;
+  gap: 24px;
+}
+
+@media (max-width: 680px) {
+  .home-page {
+    gap: 18px;
+  }
+}
+
 .empty-view {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -381,6 +392,7 @@ a {
   display: grid;
   gap: 20px;
   grid-template-columns: repeat(3, minmax(240px, 1fr));
+  align-items: stretch;
 }
 
 .place-card {
@@ -390,11 +402,13 @@ a {
   overflow: hidden;
   box-shadow: var(--shadow);
   display: grid;
-  row-gap: 16px;
+  grid-template-rows: 180px 1fr;
+  height: 100%;
+  min-height: 370px;
 }
 
 .place-image-wrap {
-  min-height: 180px;
+  height: 180px;
   background: #f7f9fc;
   display: grid;
   place-items: center;
@@ -420,15 +434,21 @@ a {
 
 .place-info {
   padding: 18px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  height: 100%;
 }
 
 .place-category {
   display: inline-block;
   margin-bottom: 10px;
   padding: 6px 12px;
+
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
+
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -437,12 +457,28 @@ a {
   margin: 0 0 10px;
   font-size: 1.1rem;
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  color: #000000;
+
 }
 
 .place-address {
   margin: 0;
   color: var(--text-muted);
   line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  color: #7a7a7a;
 }
 
 @media (max-width: 960px) {
@@ -703,7 +739,11 @@ a {
 }
 
 .place-card-link {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
   text-decoration: none;
   color: inherit;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -848,7 +888,9 @@ a {
 
 .map-page {
   display: grid;
+  grid-template-rows: auto auto auto auto;
   gap: 24px;
+  align-content: start;
 }
 
 .map-header {
@@ -1227,6 +1269,10 @@ a {
   gap: 12px;
 }
 
+.map-popup-card p {
+  margin: 5px
+}
+
 .board-post-category {
   display: inline-flex;
   padding: 6px 12px;
@@ -1314,7 +1360,7 @@ a {
 .map-popup-body {
   padding: 16px;
   display: grid;
-  gap: 10px;
+  gap: 0px;
 }
 
 .map-popup-category {
@@ -1333,13 +1379,13 @@ a {
   font-size: 1rem;
   font-weight: 800;
   line-height: 1.4;
-  color: #21433d;
+  color: #000000;
 }
 
 .map-popup-address,
 .map-popup-telephone {
   margin: 0;
-  color: #556b57;
+  color: #7a7a7a;
   font-size: 0.92rem;
   line-height: 1.5;
   white-space: pre-wrap;
