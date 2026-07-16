@@ -98,6 +98,17 @@ a {
   padding: 24px 0;
 }
 
+.home-page {
+  display: grid;
+  gap: 24px;
+}
+
+@media (max-width: 680px) {
+  .home-page {
+    gap: 18px;
+  }
+}
+
 .empty-view {
   background: var(--surface);
   border: 1px solid var(--border);
