@@ -1557,3 +1557,48 @@ a {
     width: 100%;
   }
 }
+
+
+/* 사용자 지정 커서
+   이미지 위치:
+   public/cursors/bread-cursor.png
+   public/cursors/bread-pointer.png
+*/
+
+/* 일반 영역 */
+body {
+  cursor: url('/cursors/bread-cursor.png') 4 4, auto;
+}
+
+/* 링크, 버튼, 클릭 가능한 요소 */
+a,
+a *,
+button,
+[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+label[for],
+.chat-toggle,
+.chatbot-button,
+.place-card-link,
+.primary-button,
+.secondary-button,
+.board-edit-button,
+.board-delete-button,
+.home-posts-more,
+.place-card,
+.map-place-item {
+  cursor: url('/cursors/bread-pointer.png') 4 4, pointer;
+}
+
+/* 텍스트 입력 영역은 기본 텍스트 커서 유지 */
+input,
+textarea {
+  cursor: text;
+}
+
+/* select는 기본 커서 유지 */
+select {
+  cursor: auto;
+}
