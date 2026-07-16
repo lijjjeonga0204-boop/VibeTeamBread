@@ -4,6 +4,7 @@ import RegionInfoView from '../views/RegionInfoView.vue'
 import PlaceDetailView from '../views/PlaceDetailView.vue'
 import BoardListView from '../views/BoardListView.vue'
 import MapView from '../views/MapView.vue'
+import CalendarView from '../views/CalendarView.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/map',
     name: 'Map',
     component: MapView
+  },
+  {
+    path: '/calendar',
+    name: 'Calendar',
+    component: CalendarView
   }
 ]
 

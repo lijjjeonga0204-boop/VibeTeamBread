@@ -90,7 +90,11 @@ export async function loadCategoryData(categoryKey) {
       longitude: Number.isFinite(longitude) ? longitude : null,
       telephone: item.tel,
       zipcode: item.zipcode,
-      copyrightType: item.cpyrhtDivCd
+      copyrightType: item.cpyrhtDivCd,
+      eventStartDate: item.eventstartdate || item.eventStartDate || null,
+      eventEndDate: item.eventenddate || item.eventEndDate || null,
+      eventPlace: item.eventplace || '',
+      playtime: item.playtime || '',
     }
   })
 
