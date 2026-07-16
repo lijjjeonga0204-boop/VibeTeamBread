@@ -96,6 +96,7 @@ async function send() {
     await nextTick();
     focusInput();
 }
+}
 
 function onKeydown(e) {
   if (e.key === "Enter" && !e.shiftKey) {
