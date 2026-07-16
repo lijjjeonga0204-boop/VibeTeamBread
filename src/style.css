@@ -434,9 +434,10 @@ a {
   display: inline-block;
   margin-bottom: 10px;
   padding: 6px 12px;
+
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
+
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -451,6 +452,8 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
+  color: #000000;
+
 }
 
 .place-address {
@@ -464,6 +467,7 @@ a {
   text-overflow: ellipsis;
   word-break: break-word;
   overflow-wrap: anywhere;
+  color: #7a7a7a;
 }
 
 @media (max-width: 960px) {
@@ -873,7 +877,9 @@ a {
 
 .map-page {
   display: grid;
+  grid-template-rows: auto auto auto auto;
   gap: 24px;
+  align-content: start;
 }
 
 .map-header {
