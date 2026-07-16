@@ -2,7 +2,7 @@
 
 > 공공데이터를 활용한 대전·충청 지역 정보 공유 커뮤니티
 
-![CHLOCAL 대표 이미지](./src/assets/hero.png)
+![CHLOCAL 대표 이미지](./public/cursors/bread-cursor.png)
 
 <br>
 
@@ -10,10 +10,8 @@
 
 | 구분 | 주소 |
 |---|---|
-| 🌐 Netlify 배포 사이트 | [CHLOCAL 바로가기](https://YOUR-SITE-NAME.netlify.app) |
-| 📦 GitLab Repository | [프로젝트 저장소 바로가기](https://lab.ssafy.com/YOUR-REPOSITORY) |
-
-> 배포 주소와 GitLab 주소를 실제 프로젝트 주소로 변경해 주세요.
+| 🌐 Netlify 배포 사이트 | [성심당특별시 바로가기](https://vibeteambread.netlify.app) |
+| 📦 GitLab Repository | [프로젝트 저장소 바로가기](https://lab.ssafy.com/csyeon1213/chlocal.git) |
 
 <br>
 
