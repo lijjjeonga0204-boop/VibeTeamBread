@@ -166,7 +166,11 @@ onMounted(async () => {
     <section class="calendar-board">
       <div class="calendar-summary">
         <strong>{{ monthLabel }}</strong>
-        <p>{{ selectedDate.value.getFullYear() }}년 {{ selectedDate.value.getMonth() + 1 }}월 {{ selectedDate.value.getDate() }}일</p>
+        <p>
+          {{ selectedDate.getFullYear() }}년
+          {{ selectedDate.getMonth() + 1 }}월
+          {{ selectedDate.getDate() }}일
+        </p>
       </div>
 
       <div v-if="errorMessage" class="calendar-error">{{ errorMessage }}</div>
@@ -184,7 +188,7 @@ onMounted(async () => {
               'calendar-cell',
               { disabled: !cell.inCurrentMonth },
               { today: sameDay(cell.date, today) },
-              { selected: sameDay(cell.date, selectedDate.value) }
+              { selected: sameDay(cell.date, selectedDate) }
             ]"
             @click="selectDate(cell)"
           >
