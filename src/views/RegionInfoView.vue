@@ -25,6 +25,56 @@ const selectedCategory = ref(
   resolveCategoryKey(route.query.category),
 )
 
+const CATEGORY_BADGE_STYLES = {
+  attractions: {
+    color: '#0000FF',
+    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+    borderColor: 'rgba(0, 0, 255, 0.25)',
+  },
+  leisure: {
+    color: '#008000',
+    backgroundColor: 'rgba(0, 128, 0, 0.1)',
+    borderColor: 'rgba(0, 128, 0, 0.25)',
+  },
+  culture: {
+    color: '#0785b8',
+    backgroundColor: 'rgba(14, 180, 252, 0.12)',
+    borderColor: 'rgba(14, 180, 252, 0.3)',
+  },
+  shopping: {
+    color: '#b51d7d',
+    backgroundColor: 'rgba(214, 37, 152, 0.1)',
+    borderColor: 'rgba(214, 37, 152, 0.25)',
+  },
+  accommodations: {
+    color: '#4c00b0',
+    backgroundColor: 'rgba(76, 0, 176, 0.1)',
+    borderColor: 'rgba(76, 0, 176, 0.25)',
+  },
+  courses: {
+    color: '#666666',
+    backgroundColor: 'rgba(128, 128, 128, 0.12)',
+    borderColor: 'rgba(128, 128, 128, 0.3)',
+  },
+  restaurants: {
+    color: '#d60000',
+    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    borderColor: 'rgba(255, 0, 0, 0.25)',
+  },
+  festivals: {
+    color: '#d95700',
+    backgroundColor: 'rgba(255, 106, 0, 0.12)',
+    borderColor: 'rgba(255, 106, 0, 0.3)',
+  },
+}
+
+const placeCategoryStyle = computed(() => {
+  return (
+    CATEGORY_BADGE_STYLES[selectedCategory.value] ||
+    CATEGORY_BADGE_STYLES.attractions
+  )
+})
+
 const currentCategoryData = ref({
   key: 'attractions',
   label: '관광지',
@@ -333,7 +383,10 @@ onMounted(() => {
           </div>
 
           <div class="place-info">
-            <span class="place-category">
+            <span
+              class="place-category"
+              :style="placeCategoryStyle"
+            >
               {{ place.category }}
             </span>
 

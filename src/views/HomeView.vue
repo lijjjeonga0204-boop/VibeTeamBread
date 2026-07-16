@@ -64,7 +64,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="page-view">
+  <div class="page-view home-page">
     <section class="hero-section">
       <div class="hero-text">
         <p class="eyebrow">대전·충청권 지역정보 서비스</p>
