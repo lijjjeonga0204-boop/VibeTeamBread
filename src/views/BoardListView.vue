@@ -468,3 +468,50 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.board-form,
+.board-form-section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.board-header {
+  margin-bottom: 1.5rem;
+}
+
+.board-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 1.1rem;
+}
+
+.board-field:last-of-type {
+  margin-bottom: 1.25rem;
+}
+
+.board-field-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 0;
+}
+
+.board-input,
+.board-select,
+.board-textarea,
+.board-password-help,
+.board-submit-button {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.board-textarea {
+  min-height: 8rem;
+}
+</style>

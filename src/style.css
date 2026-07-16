@@ -1001,8 +1001,8 @@ a {
   width: 100%;
   padding: 16px;
   border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--surface-strong);
+  border: 1px solid var(--place-card-border, var(--border));
+  background: var(--place-card-bg, var(--surface-strong));
   color: var(--text);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease,
@@ -1015,8 +1015,8 @@ a {
 }
 
 .map-place-item.active {
-  background: rgba(126, 198, 255, 0.16);
-  border-color: rgba(126, 198, 255, 0.8);
+  background: var(--place-card-active-bg, rgba(126, 198, 255, 0.16));
+  border-color: var(--place-card-border, rgba(126, 198, 255, 0.8));
   box-shadow: 0 14px 28px rgba(126, 198, 255, 0.18);
 }
 
@@ -1024,21 +1024,22 @@ a {
   display: inline-flex;
   padding: 6px 12px;
   border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
+  background: var(--place-card-badge-bg, var(--primary-soft));
+  color: var(--place-card-badge-color, var(--primary));
   font-size: 0.85rem;
   font-weight: 700;
 }
 
 .map-place-item-title {
   margin: 0;
+  color: #000000;
   font-size: 1rem;
   line-height: 1.4;
 }
 
 .map-place-item-address {
   margin: 0;
-  color: var(--text-muted);
+  color: #7a7a7a;
   line-height: 1.6;
 }
 
