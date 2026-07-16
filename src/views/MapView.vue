@@ -43,6 +43,42 @@ const CATEGORY_MARKER_STYLES = {
   festivals: { color: '#FF6A00', fillColor: '#FF6A00' },
 }
 
+function hexToRgba(hex, alpha) {
+  const normalized = hex.replace('#', '')
+  const full =
+    normalized.length === 3
+      ? normalized
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      : normalized
+
+  const intValue = Number.parseInt(full, 16)
+  if (Number.isNaN(intValue)) {
+    return `rgba(0, 0, 0, ${alpha})`
+  }
+
+  const r = (intValue >> 16) & 255
+  const g = (intValue >> 8) & 255
+  const b = intValue & 255
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+const currentCategoryCardStyle = computed(() => {
+  const palette =
+    CATEGORY_MARKER_STYLES[selectedCategory.value] ||
+    CATEGORY_MARKER_STYLES.attractions
+
+  return {
+    '--place-card-border': palette.color,
+    '--place-card-bg': hexToRgba(palette.color, 0.12),
+    '--place-card-active-bg': hexToRgba(palette.color, 0.18),
+    '--place-card-badge-bg': hexToRgba(palette.color, 0.16),
+    '--place-card-badge-color': palette.color,
+  }
+})
+
 const DEFAULT_MARKER_STYLE = {
   radius: 7,
   weight: 1.5,
@@ -52,7 +88,7 @@ const DEFAULT_MARKER_STYLE = {
 
 const SELECTED_MARKER_STYLE = {
   radius: 11,
-  color: '#fffff0',
+  color: '#000000',
   weight: 2,
   fillColor: '#ffffff',
   fillOpacity: 1,
@@ -455,10 +491,11 @@ onBeforeUnmount(() => {
             type="button"
             class="map-place-item"
             :class="{ active: selectedPlaceId === String(place.id) }"
+            :style="currentCategoryCardStyle"
             :aria-pressed="selectedPlaceId === String(place.id)"
             @click="selectPlaceFromList(place)"
           >
-            <span class="map-place-item-category">
+            <span class="map-place-item-category" :style="currentCategoryCardStyle">
               {{ place.category || '카테고리 없음' }}
             </span>
             <strong class="map-place-item-title">
